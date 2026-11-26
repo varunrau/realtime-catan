@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Inter:wght@500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=17" />
+  <link rel="stylesheet" href="styles.css?v=18" />
   <link rel="icon" href="assets/logo.png" />
 </head>
 <body>
@@ -17,25 +17,12 @@
   <!-- ================= HOME ================= -->
   <section class="screen active" id="home">
     <div class="home-inner">
-      <div class="home-copy">
-        <div class="crest"><img src="assets/logo.png" alt="" onerror="this.parentNode.classList.add('noimg');this.remove()" /></div>
-        <h1 class="display">Realtime <span class="amp">Catan</span></h1>
+      <div class="crest"><img src="assets/logo.png" alt="" onerror="this.parentNode.classList.add('noimg');this.remove()" /></div>
+      <h1 class="display home-title">Realtime<br /><span class="amp">Catan</span></h1>
+      <div class="home-actions">
+        <button class="btn primary xl" data-modal="play-modal" id="play-btn">Play</button>
+        <button class="btn glass xl" data-go="stats" id="stats-card">Stats</button>
       </div>
-
-      <nav class="mode-grid">
-        <button class="mode-card primary" data-modal="play-modal">
-          <span class="mode-art art-realtime"></span>
-          <span class="mode-text"><b>Play</b></span>
-          <span class="mode-arrow">→</span>
-        </button>
-        <button class="mode-card" data-go="stats" id="stats-card">
-          <span class="mode-art art-stats"></span>
-          <span class="mode-text"><b>Stats</b></span>
-          <span class="mode-arrow">→</span>
-        </button>
-      </nav>
-
-
     </div>
   </section>
 
@@ -229,8 +216,8 @@
 
 
   <div class="toasts" id="toasts"></div>
-  <script src="app.js?v=17"></script>
+  <script src="app.js?v=18"></script>
   <!-- three.js dice, bundled into one classic script so it also works when opened from disk -->
-  <script src="dice3d.bundle.js?v=17"></script>
+  <script src="dice3d.bundle.js?v=18"></script>
 </body>
 </html>

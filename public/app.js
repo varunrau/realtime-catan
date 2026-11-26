@@ -83,6 +83,7 @@
   function renderHome() {
     renderSeats();
     $('#stats-card').hidden = !G.rolls.length;
+    $('#play-btn').textContent = G.turn ? 'Continue' : 'Play';
   }
 
   // ---------------------------------------------------------------- formula
