@@ -539,7 +539,8 @@ input.color { width: 48px; height: 36px; border-radius: 8px; border: 1px solid v
   .mode-grid, .table-card, .home-copy { grid-column: 1; grid-row: auto; }
   .stage { grid-template-columns: 1fr; overflow-y: auto; align-items: start; padding-bottom: 12px; }
   .dial { --size: min(84vw, 56vh); }
-  .dial-wrap { height: auto; padding: 8px 0 20px; }
+  .dial-wrap { height: auto; min-height: auto; padding: 8px 0 20px; }
+  .stage { grid-auto-rows: max-content; }
   .side { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); overflow: visible; }
   .alert { grid-template-columns: 1fr; gap: 24px; text-align: left; }
   .alert-art { width: min(60vw, 280px); justify-self: center; }

@@ -54,7 +54,8 @@
     current = name;
     $$('.screen').forEach((s) => s.classList.toggle('active', s.id === name));
     document.body.classList.toggle('in-play', name === 'play');
-    if (name === 'play') renderPlay();
+    if (name === 'play') { renderPlay(); if (G.alerts.length) setTimeout(showNextAlert, 250); }
+    else $$('.alert').forEach((a) => a.classList.remove('show'));
     if (name === 'stats') renderStats();
     if (name === 'settings') renderSettings();
     if (name === 'home') renderSeats();
@@ -683,7 +684,7 @@
   // ---------------------------------------------------------------- boot
   applyTheme();
   renderSeats();
-  if (G.alerts.length) setTimeout(showNextAlert, 300);
+  if (G.alerts.length) { /* shown when the game screen opens */ }
   else if (G.status === 'halted') {
     if (G.alchArmed) setTimeout(openAlchemist, 300);
     else { G.status = 'paused'; G.remaining = G.remaining || turnSeconds(G.turn) * 1000; }
