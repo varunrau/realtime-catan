@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#07131b" />
+  <title>Realtime Catan — Dice Companion</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Inter:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css?v=14" />
+  <link rel="icon" href="assets/logo.png" />
+</head>
+<body>
+  <div class="backdrop" id="backdrop"></div>
+
+  <!-- ================= HOME ================= -->
+  <section class="screen active" id="home">
+    <div class="home-inner">
+      <div class="home-copy">
+        <div class="crest"><img src="assets/logo.png" alt="" onerror="this.parentNode.classList.add('noimg');this.remove()" /></div>
+        <h1 class="display">Realtime <span class="amp">Catan</span></h1>
+      </div>
+
+      <nav class="mode-grid">
+        <button class="mode-card primary" data-go="realtime">
+          <span class="mode-art art-realtime"></span>
+          <span class="mode-text"><b>Play</b></span>
+          <span class="mode-arrow">→</span>
+        </button>
+        <button class="mode-card" data-go="stats">
+          <span class="mode-art art-stats"></span>
+          <span class="mode-text"><b>Stats</b></span>
+          <span class="mode-arrow">→</span>
+        </button>
+        <button class="mode-card" data-go="settings">
+          <span class="mode-art art-settings"></span>
+          <span class="mode-text"><b>Settings</b></span>
+          <span class="mode-arrow">→</span>
+        </button>
+      </nav>
+
+      <div class="table-card card">
+        <h2 class="table-title">Players</h2>
+        <div class="seats" id="seats"></div>
+        <form class="add-seat" id="add-seat">
+          <input id="seat-name" maxlength="16" placeholder="Name" autocomplete="off" />
+          <button class="btn ghost sm" type="submit">Add</button>
+        </form>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ================= PLAY ================= -->
+  <section class="screen" id="play">
+    <header class="bar">
+      <button class="icon-btn" data-go="home" title="Home">←</button>
+      <div class="bar-title"><span class="bar-mode">Turn <span id="turn-count">0</span></span></div>
+      <div class="bar-actions">
+        <button class="icon-btn" id="fs-btn" title="Fullscreen (F)">⛶</button>
+        <button class="btn ghost sm" id="reset-game">Reset</button>
+        <button class="icon-btn" data-go="settings" title="Settings">⚙</button>
+      </div>
+    </header>
+
+    <main class="stage">
+      <div class="dial-wrap">
+        <div class="dial" id="dial">
+          <div class="dial-glow"></div>
+          <div class="dial-ring" id="dial-ring"></div>
+          <div class="dial-ticks" id="dial-ticks"></div>
+          <div class="dial-inner">
+            <div class="clock-read" id="clock-read"><span id="clock-secs">30</span><small>s</small></div>
+            <div class="dice" id="dice"></div>
+            <div class="total" id="total">—</div>
+          </div>
+        </div>
+      </div>
+
+      <aside class="side">
+        <div class="card mini robber-card" id="robber-card">
+          <div class="robber-art"></div>
+          <b id="robber-next">—</b>
+        </div>
+
+        <div class="card mini ship-card" id="ship-card">
+          <div class="ship-track" id="ship-track"></div>
+        </div>
+
+        <div class="card mini progress-card" id="progress-card">
+          <div id="progress-text" class="progress-text">—</div>
+        </div>
+
+        <div class="card mini">
+          <div class="history" id="history"></div>
+          <div class="spark" id="spark"></div>
+        </div>
+      </aside>
+    </main>
+
+    <footer class="controls">
+      <button class="ctl" id="alch-btn" title="Alchemist (A)"><span class="ctl-ico alch"></span><span>Alchemist</span></button>
+      <button class="ctl hero" id="main-btn" title="Space"><span id="main-label">Start</span></button>
+      <button class="ctl" id="next-btn" title="Next roll (N)"><span class="ctl-ico next"></span><span>Next roll</span></button>
+      <button class="ctl" id="undo-btn" title="Undo last roll"><span class="ctl-ico undo"></span><span>Undo</span></button>
+    </footer>
+  </section>
+
+  <!-- ================= STATS ================= -->
+  <section class="screen" id="stats">
+    <header class="bar">
+      <button class="icon-btn" data-go="home" title="Home">←</button>
+      <div class="bar-title"><span class="bar-mode">Stats</span><span class="bar-turn" id="stats-total">0 rolls</span></div>
+      <div class="bar-actions"><button class="btn ghost sm" id="reset-stats">Reset</button></div>
+    </header>
+    <div class="page">
+      <div class="card chart-card">
+        <div class="card-head"><h2>Distribution</h2>
+          <div class="legend"><span><i class="sw sw-bar"></i>Rolled</span><span><i class="sw sw-exp"></i>Expected</span></div>
+        </div>
+        <div class="chart" id="chart"></div>
+      </div>
+      <div class="stat-tiles" id="stat-tiles"></div>
+    </div>
+  </section>
+
+  <!-- ================= SETTINGS ================= -->
+  <section class="screen" id="settings">
+    <header class="bar">
+      <button class="icon-btn" id="settings-back" title="Back">←</button>
+      <div class="bar-title"><span class="bar-mode">Settings</span></div>
+      <div class="bar-actions"><button class="btn ghost sm" id="reset-settings">Defaults</button></div>
+    </header>
+    <div class="page settings-page">
+      <div class="card">
+        <h2>Clock</h2>
+        <div class="row">
+          <div><b>Turn length</b></div>
+          <div class="formula"><span>f(t) =</span><input id="set-formula" spellcheck="false" /></div>
+        </div>
+        <div class="formula-preview" id="formula-preview"></div>
+        <div class="row">
+          <div><b>Auto-pause on 7 and barbarians</b></div>
+          <label class="switch"><input type="checkbox" id="set-autopause" /><span></span></label>
+        </div>
+        <div class="row">
+          <div><b>Warning ticks</b></div>
+          <label class="switch"><input type="checkbox" id="set-ticks" /><span></span></label>
+        </div>
+      </div>
+      <div class="card">
+        <h2>Dice</h2>
+        <div class="row">
+          <div><b>Fair dice</b></div>
+          <label class="switch"><input type="checkbox" id="set-fair" /><span></span></label>
+        </div>
+        <div class="row">
+          <div><b>Cities &amp; Knights</b></div>
+          <label class="switch"><input type="checkbox" id="set-ck" /><span></span></label>
+        </div>
+        <div class="row" id="row-robber-wait">
+          <div><b>Robber waits for barbarians</b></div>
+          <label class="switch"><input type="checkbox" id="set-robberwait" /><span></span></label>
+        </div>
+      </div>
+      <div class="card">
+        <h2>Sound</h2>
+        <div class="row">
+          <div><b>Volume</b></div>
+          <div class="vol"><span class="vol-ico"></span><input type="range" id="set-volume" min="0" max="100" /></div>
+        </div>
+        <div class="row">
+          <div><b>Announce rolls</b></div>
+          <label class="switch"><input type="checkbox" id="set-voice" /><span></span></label>
+        </div>
+        <div class="row">
+          <div><b>Keep screen awake</b></div>
+          <label class="switch"><input type="checkbox" id="set-wake" /><span></span></label>
+        </div>
+      </div>
+      <div class="card">
+        <h2>Table colours</h2>
+        <div class="row">
+          <div><b>Primary background</b></div>
+          <input type="color" id="set-bg1" class="color" />
+        </div>
+        <div class="row">
+          <div><b>Secondary background</b></div>
+          <input type="color" id="set-bg2" class="color" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= OVERLAYS ================= -->
+  <div class="alert" id="alert-seven">
+    <div class="alert-art robber-big"></div>
+    <div class="alert-body">
+      <h2 class="display robber-title" id="seven-title">Robber</h2>
+      <button class="btn primary lg" data-resume>Resume</button>
+    </div>
+  </div>
+
+  <div class="alert ship" id="alert-ship">
+    <div class="alert-art ship-big"></div>
+    <div class="alert-body">
+      <h2 class="display robber-title">Barbarians attack</h2>
+      <button class="btn primary lg" data-resume>Resume</button>
+    </div>
+  </div>
+
+
+  <div class="modal" id="alch-modal">
+    <div class="modal-card">
+      <div class="alch-art"></div>
+      <h2 class="display sm">Alchemist</h2>
+      <div class="alch-pick">
+        <div class="face-pick" id="alch-a"></div>
+        <div class="face-pick red" id="alch-b"></div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn ghost" id="alch-cancel">Roll instead</button>
+        <button class="btn primary" id="alch-ok">Set dice</button>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="toasts" id="toasts"></div>
+  <script src="app.js?v=14"></script>
+  <!-- three.js dice, bundled into one classic script so it also works when opened from disk -->
+  <script src="dice3d.bundle.js?v=14"></script>
+</body>
+</html>
