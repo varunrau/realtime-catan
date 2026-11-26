@@ -172,7 +172,9 @@ if (renderer) {
 
   // ---------------------------------------------------------------- dice + layout
   let dice = []; // { mesh, kind, home: Vector3, anim }
-  const SPACING = 1.3; // die size + gap, in die units (matches the CSS layout)
+  // Centre-to-centre distance in die units, measured from the CSS layout. It is kept above
+  // the cube's diagonal (~1.75) so tumbling dice can never overlap.
+  let SPACING = 1.8;
 
   function setKinds(kinds) {
     if (!canvas.isConnected) host.appendChild(canvas);
@@ -234,7 +236,6 @@ if (renderer) {
         axis2,
         spin: Math.PI * 2 * (4.5 + Math.random() * 2) * (Math.random() < 0.5 ? -1 : 1),
         spin2: Math.PI * 2 * (1 + Math.random()) * (Math.random() < 0.5 ? -1 : 1),
-        drift: (Math.random() - 0.5) * 0.5,
         hop: 1.0 + Math.random() * 0.25,
       };
     });
@@ -253,7 +254,7 @@ if (renderer) {
       if (t < 1) busy = true;
       // decaying bounces
       const y = a.hop * Math.abs(Math.sin(t * Math.PI * 2.5)) * Math.pow(1 - t, 1.7);
-      d.mesh.position.set(d.home.x + a.drift * (1 - easeOut(t)), d.home.y + y, d.home.z);
+      d.mesh.position.set(d.home.x, d.home.y + y, d.home.z);
       // spin unwinds onto the final orientation; blend in from where the die was resting
       const left = 1 - easeOut(t);
       _q.setFromAxisAngle(a.axis, a.spin * left).multiply(_q2.setFromAxisAngle(a.axis2, a.spin2 * left)).multiply(a.qEnd);
@@ -278,6 +279,12 @@ if (renderer) {
     const dieEl = host.querySelector('.die');
     const dpx = dieEl ? dieEl.offsetWidth : 100; // one die, in CSS pixels
     if (!w || !h) return;
+    const els = host.querySelectorAll('.die');
+    if (els.length > 1) SPACING = Math.max(1.8, (els[1].offsetLeft - els[0].offsetLeft) / dpx);
+    dice.forEach((d, i) => {
+      d.home.x = (i - (dice.length - 1) / 2) * SPACING;
+      if (!d.anim) d.mesh.position.copy(d.home);
+    });
     renderer.setSize(w, h, false);
     camera.aspect = w / h;
     const visibleH = h / dpx; // world units that must fit vertically

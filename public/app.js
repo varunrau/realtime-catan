@@ -58,7 +58,7 @@
     else $$('.alert').forEach((a) => a.classList.remove('show'));
     if (name === 'stats') renderStats();
     if (name === 'settings') renderSettings();
-    if (name === 'home') renderSeats();
+    if (name === 'home') renderHome();
   }
   document.addEventListener('click', (e) => {
     const g = e.target.closest('[data-go]');
@@ -72,7 +72,18 @@
     if (e.target.closest('[data-resume]')) resumeFromAlert();
   });
   const openModal = (id) => $('#' + id).classList.add('show');
-  $('#settings-back').onclick = () => go(previous === 'settings' ? 'home' : previous);
+  // Settings opened from the Play dialog returns to it
+  let settingsFromDialog = false;
+  $('#settings-back').onclick = () => {
+    if (settingsFromDialog) { settingsFromDialog = false; go('home'); openModal('play-modal'); return; }
+    go(previous === 'settings' ? 'home' : previous);
+  };
+  $('#open-settings').onclick = () => { $('#play-modal').classList.remove('show'); settingsFromDialog = true; go('settings'); };
+  $('#start-play').onclick = () => { $('#play-modal').classList.remove('show'); go('play'); };
+  function renderHome() {
+    renderSeats();
+    $('#stats-card').hidden = !G.rolls.length;
+  }
 
   // ---------------------------------------------------------------- formula
   function compileFormula(src) {
@@ -327,6 +338,8 @@
     $$('.alert').forEach((a) => a.classList.remove('show'));
     document.body.classList.remove('alerting');
     if (G.status === 'halted') {
+      // A 7 produces nothing, so once the robber is dealt with the next turn rolls at once
+      if (lastRoll()?.total === 7) { G.status = 'running'; save(); roll(); return; }
       G.status = 'running';
       G.endsAt = Date.now() + (G.remaining || turnSeconds(G.turn) * 1000);
       sfx.chime();
@@ -347,23 +360,6 @@
     if (G.status !== 'running') return;
     G.status = 'paused'; G.remaining = Math.max(0, G.endsAt - Date.now());
     save(); renderPlay(); updateWake();
-  }
-
-  function undo() {
-    const r = G.rolls.pop();
-    if (!r) return;
-    G.turn = Math.max(0, G.turn - 1);
-    Object.assign(G, r.prev);
-    if (S.fair && !r.alch && G.deck) G.deck.push([r.d1, r.d2]);
-    G.alerts = [];
-    $$('.alert').forEach((a) => a.classList.remove('show'));
-    document.body.classList.remove('alerting');
-    document.body.classList.remove('alerting');
-    if (G.status === 'halted') { G.status = 'paused'; G.remaining = turnSeconds(G.turn) * 1000; }
-    if (G.status === 'running') G.endsAt = Date.now() + turnSeconds(G.turn) * 1000;
-    if (!G.rolls.length) { G.status = 'idle'; }
-    save(); renderPlay();
-    showFaces(lastRoll(), true);
   }
 
   // ---------------------------------------------------------------- alchemist
@@ -406,14 +402,9 @@
     else startClock();
   };
   $('#next-btn').onclick = () => { audio(); if (G.status === 'running' || G.status === 'paused') roll(); };
-  $('#undo-btn').onclick = undo;
   $('#alch-btn').onclick = () => {
     G.alchArmed = !G.alchArmed;
     save(); renderPlay();
-  };
-  $('#fs-btn').onclick = () => {
-    if (document.fullscreenElement) document.exitFullscreen();
-    else document.documentElement.requestFullscreen?.();
   };
 
   document.addEventListener('keydown', (e) => {
@@ -427,7 +418,6 @@
     else if (k === 'n') $('#next-btn').click();
     else if (k === 'p') pauseClock();
     else if (k === 'a' && S.ck) $('#alch-btn').click();
-    else if (k === 'f') $('#fs-btn').click();
   });
 
   // ---------------------------------------------------------------- render play
@@ -463,7 +453,6 @@
     main.classList.toggle('running', G.status === 'running');
     lbl.textContent = { idle: 'Start', running: 'Pause', paused: 'Resume', halted: 'Resolve' }[G.status];
     $('#next-btn').disabled = !(G.status === 'running' || G.status === 'paused');
-    $('#undo-btn').disabled = !G.rolls.length;
     $('#alch-btn').classList.toggle('armed', !!G.alchArmed);
 
     document.body.classList.toggle('halted', G.status === 'halted' || G.status === 'paused');
@@ -683,7 +672,7 @@
 
   // ---------------------------------------------------------------- boot
   applyTheme();
-  renderSeats();
+  renderHome();
   if (G.alerts.length) { /* shown when the game screen opens */ }
   else if (G.status === 'halted') {
     if (G.alchArmed) setTimeout(openAlchemist, 300);

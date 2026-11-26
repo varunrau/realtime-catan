@@ -9,7 +9,7 @@ Put it in the middle of the table: a shared clock rolls the dice for everyone ev
 
 <table>
   <tr>
-    <td width="50%"><img src="docs/screenshots/home.jpg" alt="Home screen with players" /></td>
+    <td width="50%"><img src="docs/screenshots/players.jpg" alt="Players dialog" /></td>
     <td width="50%"><img src="docs/screenshots/robber.jpg" alt="Robber alert naming who moves the robber" /></td>
   </tr>
   <tr>
@@ -20,15 +20,14 @@ Put it in the middle of the table: a shared clock rolls the dice for everyone ev
 
 ## Features
 
-- **Play**: an auto-rolling clock with Start/Pause/Resume, **Next roll** and **Reset**.
-- **Auto-pause on 7**: the clock stops and the screen names who moves the robber. The robber passes around the table in seat order, starting with the first player.
+- **Play**: add players in seat order, then an auto-rolling clock with Start/Pause/Resume, **Next roll** and **Reset**.
+- **Auto-pause on 7**: the clock stops and the screen names who moves the robber (passing around the table in seat order). Resuming rolls the next turn straight away.
 - **Cities & Knights**: yellow, red and event dice, a barbarian ship track, attack alerts, progress-card gate thresholds, the **Alchemist** (the next turn waits for named dice) and the optional "robber waits for the first attack" rule.
 - **Stats**: a dice histogram against the expected distribution, plus hot and cold numbers.
 - **Settings**: a turn-length formula `f(t)` (for example `20 + t/2`), fair dice (a shuffled deck of all 36 outcomes), warning ticks, volume, spoken roll announcements, keeping the screen awake, and table colours.
-- **Undo**: removes the last roll.
 - **Saving**: everything is saved on the device (localStorage).
 
-Keys: `Space` start/pause · `N` next roll · `P` pause · `A` alchemist · `F` fullscreen.
+Keys: `Space` start/pause · `N` next roll · `P` pause · `A` alchemist.
 
 ## Run locally
 

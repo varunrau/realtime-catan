@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Inter:wght@500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=16" />
+  <link rel="stylesheet" href="styles.css?v=17" />
   <link rel="icon" href="assets/logo.png" />
 </head>
 <body>
@@ -23,31 +23,18 @@
       </div>
 
       <nav class="mode-grid">
-        <button class="mode-card primary" data-go="realtime">
+        <button class="mode-card primary" data-modal="play-modal">
           <span class="mode-art art-realtime"></span>
           <span class="mode-text"><b>Play</b></span>
           <span class="mode-arrow">→</span>
         </button>
-        <button class="mode-card" data-go="stats">
+        <button class="mode-card" data-go="stats" id="stats-card">
           <span class="mode-art art-stats"></span>
           <span class="mode-text"><b>Stats</b></span>
           <span class="mode-arrow">→</span>
         </button>
-        <button class="mode-card" data-go="settings">
-          <span class="mode-art art-settings"></span>
-          <span class="mode-text"><b>Settings</b></span>
-          <span class="mode-arrow">→</span>
-        </button>
       </nav>
 
-      <div class="table-card card">
-        <h2 class="table-title">Players</h2>
-        <div class="seats" id="seats"></div>
-        <form class="add-seat" id="add-seat">
-          <input id="seat-name" maxlength="16" placeholder="Name" autocomplete="off" />
-          <button class="btn ghost sm" type="submit">Add</button>
-        </form>
-      </div>
 
     </div>
   </section>
@@ -58,7 +45,6 @@
       <button class="icon-btn" data-go="home" title="Home">←</button>
       <div class="bar-title"><span class="bar-mode">Turn <span id="turn-count">0</span></span></div>
       <div class="bar-actions">
-        <button class="icon-btn" id="fs-btn" title="Fullscreen (F)">⛶</button>
         <button class="btn ghost sm" id="reset-game">Reset</button>
         <button class="icon-btn" data-go="settings" title="Settings">⚙</button>
       </div>
@@ -103,7 +89,6 @@
       <button class="ctl" id="alch-btn" title="Alchemist (A)"><span class="ctl-ico alch"></span><span>Alchemist</span></button>
       <button class="ctl hero" id="main-btn" title="Space"><span id="main-label">Start</span></button>
       <button class="ctl" id="next-btn" title="Next roll (N)"><span class="ctl-ico next"></span><span>Next roll</span></button>
-      <button class="ctl" id="undo-btn" title="Undo last roll"><span class="ctl-ico undo"></span><span>Undo</span></button>
     </footer>
   </section>
 
@@ -211,6 +196,22 @@
   </div>
 
 
+  <div class="modal" id="play-modal">
+    <div class="modal-card">
+      <button class="modal-x" data-close>×</button>
+      <h2>Players</h2>
+      <div class="seats" id="seats"></div>
+      <form class="add-seat" id="add-seat">
+        <input id="seat-name" maxlength="16" placeholder="Name" autocomplete="off" />
+        <button class="btn ghost sm" type="submit">Add</button>
+      </form>
+      <div class="modal-actions">
+        <button class="btn ghost" id="open-settings">Settings</button>
+        <button class="btn primary" id="start-play">Play</button>
+      </div>
+    </div>
+  </div>
+
   <div class="modal" id="alch-modal">
     <div class="modal-card">
       <div class="alch-art"></div>
@@ -228,8 +229,8 @@
 
 
   <div class="toasts" id="toasts"></div>
-  <script src="app.js?v=16"></script>
+  <script src="app.js?v=17"></script>
   <!-- three.js dice, bundled into one classic script so it also works when opened from disk -->
-  <script src="dice3d.bundle.js?v=16"></script>
+  <script src="dice3d.bundle.js?v=17"></script>
 </body>
 </html>
